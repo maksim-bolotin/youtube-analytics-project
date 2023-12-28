@@ -46,4 +46,4 @@ class Channel:
             'view_count': self.view_count
         }
         with open("moscowpython.json", "w", encoding="UTF-8") as file:
-            dump(result, file, indent=2)
+            dump(result, file, ensure_ascii=False, indent=2)
