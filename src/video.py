@@ -14,11 +14,19 @@ class Video:
         """
         self.video_id = video_id
         self.video = Video.get_service().videos().list(
-            id=self.video_id, part="snippet,contentDetails,statistics").execute()
-        self.title = self.video["items"][0]["snippet"]["title"]
-        self.url = f"https://www.youtube.com/watch?v={self.video['items'][0]['id']}"
-        self.view_count = self.video["items"][0]["statistics"]["viewCount"]
-        self.likes_count = self.video["items"][0]["statistics"]["likeCount"]
+                id=self.video_id, part="snippet,contentDetails,statistics").execute()
+        try:
+            self.title = self.video["items"][0]["snippet"]["title"]
+            self.url = f"https://www.youtube.com/watch?v={self.video['items'][0]['id']}"
+            self.view_count = self.video["items"][0]["statistics"]["viewCount"]
+            self.like_count = self.video["items"][0]["statistics"]["likeCount"]
+        except IndexError:
+            # Обработка исключения при неудачном запросе данных по API.
+            self.video = None
+            self.title = None
+            self.url = None
+            self.view_count = None
+            self.like_count = None
 
     @classmethod
     def get_service(cls):
@@ -34,6 +42,7 @@ class Video:
 
 class PLVideo(Video):
     """Второй класс для видео."""
+
     def __init__(self, video_id, playlist_id) -> None:
         """
         Экземпляр инициализируется id видео и id плейлиста.
